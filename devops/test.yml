@@ -1,0 +1,31 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Standup docker environment
+  hosts: localhost
+  tasks:
+    - name: Start up docker instance
+      docker_container:
+        name: jessie
+        image: quay.io/freedomofpress/debian-jessie-systemd
+        #image: "{{ lookup('env','docker_image') }}@{{ lookup('env','docker_hash') }}"
+        state: started
+        privileged: True
+        tty: True
+        interactive: True
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+
+    - add_host:
+        hostname: jessie
+        ansible_connection: docker
+
+- name: Install elastalert
+  hosts: jessie
+  pre_tasks:
+    - name: Install pre-reqs for pax flag manipulation
+      package:
+        name: attr
+      when: ansible_kernel.endswith('grsec')
+
+  roles:
+    - role: ansible-role-elastalert

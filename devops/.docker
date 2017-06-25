@@ -1,0 +1,2 @@
+export docker_image="quay.io/freedomofpress/debian-jessie-systemd"
+export docker_hash="sha256:e86f30b9230ad8d1a16f0820580217bb2b81d74cc47fdf8956981a9705895663"

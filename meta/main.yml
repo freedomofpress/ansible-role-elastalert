@@ -1,0 +1,16 @@
+galaxy_info:
+  author: Michael Sheinberg
+  description: Elastalert installation role
+  company: Freedom of the Press Foundation
+
+  license: MIT
+
+  min_ansible_version: 2.3
+
+  platforms:
+   - name: Debian
+     versions:
+     - 8.0
+
+  galaxy_tags:
+    - elastalert
