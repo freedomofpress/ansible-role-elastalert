@@ -31,7 +31,7 @@
   become: yes
 
 - name: Copy over alert files
-  copy:
+  template:
     src: "{{ item }}"
     dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}"
     owner: root
