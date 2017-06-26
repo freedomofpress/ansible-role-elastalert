@@ -1,9 +1,12 @@
 ---
 # General settings
 elastalert_version: 0.1.15
-elastalert_rules_dir: example_rules
+elastalert_rules_dir: rules
+elastalert_rules_files: []
 elastalert_alert_time_limit:
   days: 2
+elastalert_buffer_time:
+  minutes: 15
 
 # Elasticsearch settings
 elastalert_es_ssl: false
@@ -11,6 +14,8 @@ elastalert_es_verifycerts: false
 elastalert_es_host: localhost
 elastalert_es_port: 9200
 elastalert_es_writeback_index: elastalert_status
+elastalert_es_url: "http{{ 's' if elastalert_es_ssl else '' }}://{{ elastalert_es_host }}:{{ elastalert_es_port }}"
+elastalert_es_send_get_body_as: GET
 elastalert_es_run_every:
   minutes: 5
 
@@ -22,6 +27,8 @@ elastalert_pkgs:
   - libssl-dev
 
 # System installation settings
+elastalert_etc_root: /etc/elastalert
+elastalert_etc_rules_dir: "{{ elastalert_etc_root }}/rules"
 elastalert_venv_rootdir: /opt/elastalert/
 elastalert_user: elastalert
 elastalert_group: "{{ elastalert_user }}"

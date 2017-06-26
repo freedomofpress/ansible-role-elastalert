@@ -1,0 +1,33 @@
+---
+- name: Create virtualenv root directory
+  file:
+    path: "{{ elastalert_venv_rootdir }}"
+    owner: "{{ elastalert_user }}"
+    group: "{{ elastalert_group }}"
+    state: directory
+
+- name: Establish venv and ensure pip is at least version
+  pip:
+    name: "{{ item }}"
+    state: latest
+    virtualenv: "{{ elastalert_venv_rootdir }}/venv"
+  become: yes
+  become_user: "{{ elastalert_user }}"
+  with_items:
+    - pip
+    - setuptools
+
+- name: Pax flags
+  xattr:
+    name: "{{ elastalert_venv_rootdir }}/venv/bin/python2"
+    key: user.pax.flags
+    value: m
+  when: ansible_kernel.endswith('grsec')
+
+- name: Install elastalert into virtualenv
+  pip:
+    name: elastalert
+    version: "{{ elastalert_version }}"
+    virtualenv: "{{ elastalert_venv_rootdir }}/venv"
+  become_user: "{{ elastalert_user }}"
+  become: yes

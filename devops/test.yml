@@ -3,21 +3,47 @@
 - name: Standup docker environment
   hosts: localhost
   tasks:
-    - name: Start up docker instance
+    - name: Start up elasticsearch
+      docker_container:
+        name: elasticsearch
+        image: "{{ lookup('env','docker_es_image') }}@{{ lookup('env','docker_es_hash') }}"
+        state: started
+        exposed_ports:
+          - 9200
+        published_ports:
+          - 9200:9200
+        env:
+          xpack.security.enabled: "false"
+          xpack.monitoring.enabled: "false"
+          # Should not be replicated in prod obviously ;)
+          # This was needed to work with the dejavu web UI
+          http.cors.allow-origin: "http://localhost:1358"
+          http.cors.enabled: "true"
+          http.cors.allow-credentials: "true"
+          http.cors.allow-headers : "X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+          # Put into development mode, avoid prod system checks
+          http.host: 0.0.0.0
+          transport.host: 127.0.0.1
+          discovery.type: "single-node"
+
+    - name: Start up jessie docker instance
       docker_container:
         name: jessie
-        image: quay.io/freedomofpress/debian-jessie-systemd
-        #image: "{{ lookup('env','docker_image') }}@{{ lookup('env','docker_hash') }}"
+        image: "{{ lookup('env','docker_jessie_image') }}@{{ lookup('env','docker_jessie_hash') }}"
         state: started
         privileged: True
         tty: True
         interactive: True
         volumes:
           - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        links:
+          elasticsearch:esserver
 
     - add_host:
         hostname: jessie
         ansible_connection: docker
+      changed_when: false
+      tags: always
 
 - name: Install elastalert
   hosts: jessie
@@ -29,3 +55,4 @@
 
   roles:
     - role: ansible-role-elastalert
+      elastalert_es_host: esserver

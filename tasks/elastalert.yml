@@ -1,0 +1,46 @@
+---
+- name: Drop systemd unit file
+  template:
+    src: elastalert-systemd.service.j2
+    dest: /lib/systemd/system/elastalert.service
+    owner: root
+    group: root
+  notify: reload systemd
+  tags: systemd
+
+- name: Drop core elastalert config
+  template:
+    dest: "{{ elastalert_etc_root }}/config.yaml"
+    src: config.yaml.j2
+  tags: systemd
+  notify: restart elastalert
+
+- name: Check for existing elastalert index
+  uri:
+    url: "{{ elastalert_es_url }}/{{ elastalert_es_writeback_index }}"
+    method: HEAD
+    status_code: 200
+  register: elastalert_index_result
+  changed_when: false
+  ignore_errors: yes
+
+- name: Create index
+  command: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-create-index --config {{ elastalert_etc_root }}/config.yaml --index {{ elastalert_es_writeback_index }} --old-index ''"
+  when: elastalert_index_result|failed
+  become_user: "{{ elastalert_user }}"
+  become: yes
+
+- name: Copy over alert files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}"
+    owner: root
+    group: root
+    validate: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-test-rule --config {{ elastalert_etc_root }}/config.yaml %s"
+  with_fileglob: "{{ elastalert_rules_files }}"
+  notify: restart elastalert
+
+- name: Enable elastalert service
+  service:
+    name: elastalert
+    enabled: yes

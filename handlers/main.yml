@@ -1,0 +1,10 @@
+---
+- name: reload systemd
+  systemd:
+    name: elastalert
+    daemon_reload: yes
+
+- name: restart elastalert
+  service:
+    name: elastalert
+    state: restarted

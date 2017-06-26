@@ -1,2 +1,4 @@
-export docker_image="quay.io/freedomofpress/debian-jessie-systemd"
-export docker_hash="sha256:e86f30b9230ad8d1a16f0820580217bb2b81d74cc47fdf8956981a9705895663"
+export docker_jessie_image="quay.io/freedomofpress/debian-jessie-systemd"
+export docker_jessie_hash="sha256:e86f30b9230ad8d1a16f0820580217bb2b81d74cc47fdf8956981a9705895663"
+export docker_es_image="quay.io/freedomofpress/elasticsearch-with-paxflags"
+export docker_es_hash=sha256:0ffacf2ab995af49bea0bad85ce0e856f648e75b5efcf60b7ea5e55cc9598443

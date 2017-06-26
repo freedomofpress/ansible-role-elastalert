@@ -1,0 +1,49 @@
+# This is the folder that contains the rule yaml files
+# Any .yaml file will be loaded as a rule
+rules_folder: {{ elastalert_etc_rules_dir }}
+
+# How often ElastAlert will query Elasticsearch
+# The unit can be anything from weeks to seconds
+run_every:
+{{ elastalert_es_run_every | to_nice_yaml | indent(2, true) }}
+
+# ElastAlert will buffer results from the most recent
+# period of time, in case some log sources are not in real time
+buffer_time:
+{{ elastalert_buffer_time | to_nice_yaml | indent(2, true) }}
+
+# The Elasticsearch hostname for metadata writeback
+# Note that every rule can have its own Elasticsearch host
+es_host: {{ elastalert_es_host }}
+
+# The Elasticsearch port
+es_port: {{ elastalert_es_port }}
+
+# Optional URL prefix for Elasticsearch
+{% if es_url_prefix is defined %}es_url_prefix: {{ es_url_prefix }}{% endif %}
+
+# Connect with TLS to Elasticsearch
+use_ssl: {{ elastalert_es_ssl }}
+
+# Verify TLS certificates
+verify_certs: {{ elastalert_es_verifycerts }}
+
+# GET request with body is the default option for Elasticsearch.
+# If it fails for some reason, you can pass 'GET', 'POST' or 'source'.
+# See http://elasticsearch-py.readthedocs.io/en/master/connection.html?highlight=send_get_body_as#transport
+# for details
+es_send_get_body_as: {{ elastalert_es_send_get_body_as }}
+
+# Option basic-auth username and password for Elasticsearch
+{% if elastalert_es_username is defined %}es_username: {{ elastalert_es_username }}{% endif %}
+{% if elastalert_es_password is defined %}es_password: {{ elastalert_es_password }}{% endif %}
+
+# The index on es_host which is used for metadata storage
+# This can be a unmapped index, but it is recommended that you run
+# elastalert-create-index to set a mapping
+writeback_index: {{ elastalert_es_writeback_index }}
+
+# If an alert fails for some reason, ElastAlert will retry
+# sending the alert until this time period has elapsed
+alert_time_limit:
+{{ elastalert_alert_time_limit | to_nice_yaml | indent(2, true) }}
