@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  build:
+    working_directory: /root/ansible-role-elastalert
+    docker:
+      - image: quay.io/freedomofpress/circleci-docker:latest
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      - run:
+          name: Ansible playbook test
+          command: make
