@@ -17,13 +17,6 @@
     - pip
     - setuptools
 
-- name: Pax flags
-  xattr:
-    name: "{{ elastalert_venv_rootdir }}/venv/bin/python2"
-    key: user.pax.flags
-    value: m
-  when: ansible_kernel.endswith('grsec')
-
 - name: Install elastalert into virtualenv
   pip:
     name: elastalert

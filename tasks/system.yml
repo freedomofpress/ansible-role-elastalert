@@ -2,7 +2,10 @@
 - name: Ensure etc directory in place
   file:
     state: directory
-    path: "{{ elastalert_etc_root }}"
+    path: "{{ item }}"
+  with_items:
+    - "{{ elastalert_etc_root }}"
+    - "{{ elastalert_etc_rules_dir }}"
 
 - name: Ensure pre-reqs installed
   package:

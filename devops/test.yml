@@ -48,11 +48,26 @@
 - name: Install elastalert
   hosts: jessie
   pre_tasks:
-    - name: Install pre-reqs for pax flag manipulation
-      package:
-        name: attr
-      when: ansible_kernel.endswith('grsec')
+    - name: Ensure paxctld is installed
+      apt:
+        name: paxctld
+        update_cache: yes
 
+    - name: Flag relative files for pax exceptions
+      lineinfile:
+        dest: /etc/paxctld.conf
+        line: "{{ elastalert_venv_rootdir }}venv/bin/{{ item }} m"
+        regexp: "^{{ item }}"
+      notify: restart paxctld
+      with_items:
+        - elastalert
+        - python2
   roles:
     - role: ansible-role-elastalert
       elastalert_es_host: esserver
+  handlers:
+    - name: restart paxctld
+      service:
+        name: paxctld
+        enabled: yes
+        state: restarted
