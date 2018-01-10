@@ -30,10 +30,15 @@
   become_user: "{{ elastalert_user }}"
   become: yes
 
+- name: Ensure rules directory exists
+  file:
+    state: directory
+    path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/"
+
 - name: Copy over alert files
   copy:
     src: "{{ item }}"
-    dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}"
+    dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/"
     owner: root
     group: root
     validate: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-test-rule --config {{ elastalert_etc_root }}/config.yaml %s"
