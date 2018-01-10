@@ -30,6 +30,11 @@
   become_user: "{{ elastalert_user }}"
   become: yes
 
+- name: Empty up the rules directory
+  file:
+    state: absent
+    path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/"
+
 - name: Ensure rules directory exists
   file:
     state: directory
