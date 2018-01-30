@@ -30,10 +30,15 @@
   become_user: "{{ elastalert_user }}"
   become: yes
 
-- name: Empty up the rules directory
-  file:
-    state: absent
-    path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/"
+- name: Read File system stats of the rules directory
+  stat: 
+    path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}"
+  register: rules_dir_stats
+
+- name: Fail installation when rules directory exists as a file
+  fail:
+    msg: "The rules directory already exists but it is a file"
+  when: rules_dir_stats.stat.exists and rules_dir_stats.stat.isreg
 
 - name: Ensure rules directory exists
   file:
