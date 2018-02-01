@@ -30,6 +30,13 @@
   become_user: "{{ elastalert_user }}"
   become: yes
 
+- name: Create rules folder
+  file:
+    path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}"
+    owner: root
+    group: root
+    state: directory
+
 - name: Copy over alert files
   copy:
     src: "{{ item }}"
@@ -38,6 +45,16 @@
     group: root
     validate: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-test-rule --config {{ elastalert_etc_root }}/config.yaml %s"
   with_fileglob: "{{ elastalert_rules_files }}"
+  notify: restart elastalert
+
+- name: Deploy rules from templates
+  template:
+    src: "{{ item }}"
+    dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/{{ item | basename | regex_replace('\\.j2' ,'') }}"
+    owner: root
+    group: root
+    validate: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-test-rule --config {{ elastalert_etc_root }}/config.yaml %s"
+  with_fileglob: "{{ elastalert_rules_templates }}"
   notify: restart elastalert
 
 - name: Enable elastalert service
