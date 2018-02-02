@@ -7,7 +7,7 @@ Installs [Elastalert](https://github.com/Yelp/elastalert) along with relative al
 Role Variables
 --------------
 
-```
+```yaml
 # General settings
 elastalert_version: 0.1.15
 elastalert_rules_dir: example_rules
