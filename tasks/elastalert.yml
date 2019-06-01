@@ -25,13 +25,21 @@
   ignore_errors: yes
 
 - name: Create index
-  command: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-create-index --config {{ elastalert_etc_root }}/config.yaml --index {{ elastalert_es_writeback_index }} --old-index ''"
+  shell: >
+    source ./venv/bin/activate &&
+    ./venv/bin/elastalert-create-index
+    --config {{ elastalert_etc_root }}/config.yaml
+    --index {{ elastalert_es_writeback_index }}
+    --old-index ''
+  args:
+    chdir: "{{ elastalert_venv_rootdir }}"
+    executable: /bin/bash
   when: elastalert_index_result|failed
   become_user: "{{ elastalert_user }}"
   become: yes
 
 - name: Read File system stats of the rules directory
-  stat: 
+  stat:
     path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}"
   register: rules_dir_stats
 
