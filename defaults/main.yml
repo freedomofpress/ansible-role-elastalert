@@ -1,6 +1,6 @@
 ---
 # General settings
-elastalert_version: 0.1.15
+elastalert_version: 0.1.39
 elastalert_rules_dir: rules
 elastalert_rules_files: []
 elastalert_rules_templates: []
