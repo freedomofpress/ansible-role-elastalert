@@ -36,3 +36,5 @@ elastalert_venv_rootdir: /opt/elastalert/
 elastalert_venv_python: python2
 elastalert_user: elastalert
 elastalert_group: "{{ elastalert_user }}"
+# If elasticsearch>=7, then remote ES host must run 7.x or higher.
+elastalert_es_pip_version: "6.4.0"

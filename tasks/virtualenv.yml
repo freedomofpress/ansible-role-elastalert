@@ -26,3 +26,12 @@
     virtualenv_python: "{{ elastalert_venv_python }}"
   become_user: "{{ elastalert_user }}"
   become: yes
+
+- name: Install compatible elasticsearch pip library
+  pip:
+    name: elasticsearch
+    version: "{{ elastalert_es_pip_version }}"
+    virtualenv: "{{ elastalert_venv_rootdir }}/venv"
+    virtualenv_python: "{{ elastalert_venv_python }}"
+  become_user: "{{ elastalert_user }}"
+  become: yes
