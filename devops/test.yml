@@ -26,10 +26,10 @@
           transport.host: 127.0.0.1
           discovery.type: "single-node"
 
-    - name: Start up jessie docker instance
+    - name: Start up xenial docker instance
       docker_container:
-        name: jessie
-        image: "{{ lookup('env','docker_jessie_image') }}@{{ lookup('env','docker_jessie_hash') }}"
+        name: xenial
+        image: "{{ lookup('env','docker_xenial_image') }}@{{ lookup('env','docker_xenial_hash') }}"
         state: started
         privileged: True
         tty: True
@@ -37,16 +37,23 @@
         volumes:
           - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
         links:
-          elasticsearch:esserver
+          - elasticsearch:esserver
 
     - add_host:
-        hostname: jessie
+        hostname: xenial
         ansible_connection: docker
       changed_when: false
       tags: always
 
+- name: Bootstrap test host
+  hosts: xenial
+  gather_facts: no
+  tasks:
+    - name: Install python2
+      raw: apt-get update && apt-get install -y python sudo
+
 - name: Install elastalert
-  hosts: jessie
+  hosts: xenial
   pre_tasks:
     - name: Install pre-reqs for pax flag manipulation
       package:
