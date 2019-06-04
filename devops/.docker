@@ -1,5 +1,0 @@
-# hash is xenial-20190515
-export docker_xenial_image="ubuntu"
-export docker_xenial_hash="sha256:cad5e101ab30bb7f7698b277dd49090f520fe063335643990ce8fbd15ff920ef"
-export docker_es_image="quay.io/freedomofpress/elasticsearch-with-paxflags"
-export docker_es_hash=sha256:0ffacf2ab995af49bea0bad85ce0e856f648e75b5efcf60b7ea5e55cc9598443
