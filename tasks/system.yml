@@ -1,9 +1,4 @@
 ---
-- name: Ensure etc directory in place
-  file:
-    state: directory
-    path: "{{ elastalert_etc_root }}"
-
 - name: Ensure pre-reqs installed
   package:
     name: "{{ item }}"
@@ -18,3 +13,11 @@
     name: "{{ elastalert_user }}"
     group: "{{ elastalert_group }}"
     shell: /bin/false
+
+- name: Ensure etc directory in place
+  file:
+    state: directory
+    path: "{{ elastalert_etc_root }}"
+    owner: root
+    group: "{{ elastalert_group }}"
+    mode: "0750"

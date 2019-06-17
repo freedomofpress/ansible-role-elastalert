@@ -11,23 +11,27 @@
     name: "{{ item }}"
     state: latest
     virtualenv: "{{ elastalert_venv_rootdir }}/venv"
+    virtualenv_python: "{{ elastalert_venv_python }}"
   become: yes
   become_user: "{{ elastalert_user }}"
   with_items:
     - pip
     - setuptools
 
-- name: Pax flags
-  xattr:
-    name: "{{ elastalert_venv_rootdir }}/venv/bin/python2"
-    key: user.pax.flags
-    value: m
-  when: ansible_kernel.endswith('grsec')
-
 - name: Install elastalert into virtualenv
   pip:
     name: elastalert
     version: "{{ elastalert_version }}"
     virtualenv: "{{ elastalert_venv_rootdir }}/venv"
+    virtualenv_python: "{{ elastalert_venv_python }}"
+  become_user: "{{ elastalert_user }}"
+  become: yes
+
+- name: Install compatible elasticsearch pip library
+  pip:
+    name: elasticsearch
+    version: "{{ elastalert_es_pip_version }}"
+    virtualenv: "{{ elastalert_venv_rootdir }}/venv"
+    virtualenv_python: "{{ elastalert_venv_python }}"
   become_user: "{{ elastalert_user }}"
   become: yes

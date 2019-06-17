@@ -12,6 +12,9 @@
   template:
     dest: "{{ elastalert_etc_root }}/config.yaml"
     src: config.yaml.j2
+    owner: root
+    group: "{{ elastalert_group }}"
+    mode: "0640"
   tags: systemd
   notify: restart elastalert
 
@@ -25,13 +28,21 @@
   ignore_errors: yes
 
 - name: Create index
-  command: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-create-index --config {{ elastalert_etc_root }}/config.yaml --index {{ elastalert_es_writeback_index }} --old-index ''"
+  shell: >
+    source ./venv/bin/activate &&
+    ./venv/bin/elastalert-create-index
+    --config {{ elastalert_etc_root }}/config.yaml
+    --index {{ elastalert_es_writeback_index }}
+    --old-index ''
+  args:
+    chdir: "{{ elastalert_venv_rootdir }}"
+    executable: /bin/bash
   when: elastalert_index_result|failed
   become_user: "{{ elastalert_user }}"
   become: yes
 
 - name: Read File system stats of the rules directory
-  stat: 
+  stat:
     path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}"
   register: rules_dir_stats
 
@@ -44,7 +55,8 @@
   file:
     path: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/"
     owner: root
-    group: root
+    group: "{{ elastalert_group }}"
+    mode: "0750"
     state: directory
 
 - name: Copy over alert files
@@ -52,7 +64,8 @@
     src: "{{ item }}"
     dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/"
     owner: root
-    group: root
+    group: "{{ elastalert_group }}"
+    mode: "0640"
     validate: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-test-rule --config {{ elastalert_etc_root }}/config.yaml %s"
   with_fileglob: "{{ elastalert_rules_files }}"
   notify: restart elastalert
@@ -62,7 +75,8 @@
     src: "{{ item }}"
     dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/{{ item | basename | regex_replace('\\.j2' ,'') }}"
     owner: root
-    group: root
+    group: "{{ elastalert_group }}"
+    mode: "0640"
     validate: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-test-rule --config {{ elastalert_etc_root }}/config.yaml %s"
   with_fileglob: "{{ elastalert_rules_templates }}"
   notify: restart elastalert

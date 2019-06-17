@@ -1,6 +1,6 @@
 ---
 # General settings
-elastalert_version: 0.1.15
+elastalert_version: 0.1.39
 elastalert_rules_dir: rules
 elastalert_rules_files: []
 elastalert_rules_templates: []
@@ -22,6 +22,8 @@ elastalert_es_run_every:
 
 # System pkg dependencies
 elastalert_pkgs:
+  # - python3-virtualenv
+  # - python3-dev
   - virtualenv
   - python-dev
   - gcc
@@ -31,5 +33,8 @@ elastalert_pkgs:
 elastalert_etc_root: /etc/elastalert
 elastalert_etc_rules_dir: "{{ elastalert_etc_root }}/rules"
 elastalert_venv_rootdir: /opt/elastalert/
+elastalert_venv_python: python2
 elastalert_user: elastalert
 elastalert_group: "{{ elastalert_user }}"
+# If elasticsearch>=7, then remote ES host must run 7.x or higher.
+elastalert_es_pip_version: "6.4.0"
