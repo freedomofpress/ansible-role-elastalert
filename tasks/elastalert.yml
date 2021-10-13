@@ -81,6 +81,17 @@
   with_fileglob: "{{ elastalert_rules_templates }}"
   notify: restart elastalert
 
+- name: Deploy rules from variables
+  copy:
+    content: "{{ item | to_nice_yaml(explicit_start=true) }}"
+    dest: "{{ elastalert_etc_root }}/{{ elastalert_rules_dir }}/{{ item.name | replace(' ', '-') | lower }}.yml"
+    owner: root
+    group: "{{ elastalert_group }}"
+    mode: "0640"
+    validate: "{{ elastalert_venv_rootdir }}/venv/bin/elastalert-test-rule --config {{ elastalert_etc_root }}/config.yaml %s"
+  with_items: "{{ elastalert_rules }}"
+  notify: restart elastalert
+
 - name: Enable elastalert service
   service:
     name: elastalert

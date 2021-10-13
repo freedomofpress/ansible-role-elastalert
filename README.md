@@ -11,6 +11,9 @@ Role Variables
 # General settings
 elastalert_version: 0.1.15
 elastalert_rules_dir: example_rules
+elastalert_rules:
+  - name: Flatline rule
+    type: flatline
 elastalert_alert_time_limit:
   days: 2
 
