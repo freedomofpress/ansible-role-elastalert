@@ -37,7 +37,7 @@
   args:
     chdir: "{{ elastalert_venv_rootdir }}"
     executable: /bin/bash
-  when: elastalert_index_result.failed
+  when: elastalert_index_result is failed
   become_user: "{{ elastalert_user }}"
   become: yes
 
