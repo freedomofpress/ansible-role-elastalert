@@ -20,7 +20,9 @@ es_host: {{ elastalert_es_host }}
 es_port: {{ elastalert_es_port }}
 
 # Optional URL prefix for Elasticsearch
-{% if es_url_prefix is defined %}es_url_prefix: {{ es_url_prefix }}{% endif %}
+{% if es_url_prefix is defined %}
+es_url_prefix: {{ es_url_prefix }}
+{% endif %}
 
 # Connect with TLS to Elasticsearch
 use_ssl: {{ elastalert_es_ssl }}
@@ -35,8 +37,12 @@ verify_certs: {{ elastalert_es_verifycerts }}
 es_send_get_body_as: {{ elastalert_es_send_get_body_as }}
 
 # Option basic-auth username and password for Elasticsearch
-{% if elastalert_es_username is defined %}es_username: {{ elastalert_es_username }}{% endif %}
-{% if elastalert_es_password is defined %}es_password: {{ elastalert_es_password }}{% endif %}
+{% if elastalert_es_username is defined %}
+es_username: {{ elastalert_es_username }}
+{% endif %}
+{% if elastalert_es_password is defined %}
+es_password: {{ elastalert_es_password }}
+{% endif %}
 
 # The index on es_host which is used for metadata storage
 # This can be a unmapped index, but it is recommended that you run
